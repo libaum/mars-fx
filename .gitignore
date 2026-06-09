@@ -75,7 +75,7 @@ pc-api.json
 # Bundler / Fastlane local install
 .bundle/
 **/vendor/
-fastlane/report.xml
+**/fastlane/report.xml
 
 # NDK
 obj/
