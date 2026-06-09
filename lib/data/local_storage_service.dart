@@ -6,6 +6,9 @@ class LocalStorageService {
   static const _keyCachedRates = 'cached_rates';
   static const _keyLastUpdated = 'last_updated';
   static const _keyVisibleCurrencies = 'visible_currencies';
+  static const _keyThemeIsDark = 'theme_is_dark';
+  static const _keyShowLongName = 'show_long_name';
+  static const _keyShowBaseCurrency = 'show_base_currency';
 
   final SharedPreferences _prefs;
 
@@ -52,4 +55,18 @@ class LocalStorageService {
   Future<void> setVisibleCurrencies(List<String> currencies) async {
     await _prefs.setStringList(_keyVisibleCurrencies, currencies);
   }
+
+  /// Theme mode
+  bool? getThemeIsDark() => _prefs.getBool(_keyThemeIsDark);
+
+  Future<void> setThemeIsDark(bool isDark) async {
+    await _prefs.setBool(_keyThemeIsDark, isDark);
+  }
+
+  /// Display settings
+  bool getShowLongName() => _prefs.getBool(_keyShowLongName) ?? false;
+  Future<void> setShowLongName(bool v) => _prefs.setBool(_keyShowLongName, v);
+
+  bool getShowBaseCurrency() => _prefs.getBool(_keyShowBaseCurrency) ?? false;
+  Future<void> setShowBaseCurrency(bool v) => _prefs.setBool(_keyShowBaseCurrency, v);
 }

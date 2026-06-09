@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mars_fx/logic/currency_list_manager.dart';
+import 'package:mars_fx/logic/settings_manager.dart';
 import 'package:mars_fx/pages/currency_search_screen.dart';
+import 'package:mars_fx/pages/settings_screen.dart';
 import 'package:mars_fx/pages/widgets/currency_row.dart';
+import 'package:mars_fx/pages/widgets/double_tap_theme_toggle.dart';
 import 'package:mars_fx/pages/widgets/status_bar.dart';
 import 'package:mars_fx/services/service_locator.dart';
 import 'package:mars_fx/theme/theme_constants.dart';
+import 'package:mars_fx/theme/theme_manager.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -15,57 +19,77 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final _manager = getIt<CurrencyListManager>();
+  final _settings = getIt<SettingsManager>();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 48),
-            // Currency list
-            Expanded(
-              child: ValueListenableBuilder<List<String>>(
-                valueListenable: _manager.visibleCurrenciesNotifier,
-                builder: (context, currencies, _) {
-                  return ValueListenableBuilder<Map<String, String>>(
-                    valueListenable: _manager.amountsNotifier,
-                    builder: (context, amounts, _) {
-                      return ValueListenableBuilder<String?>(
-                        valueListenable: _manager.activeCurrencyNotifier,
-                        builder: (context, activeCurrency, _) {
-                          return ListView(
-                            padding: const EdgeInsets.symmetric(horizontal: 32),
-                            children: [
-                              ...currencies.map((code) => CurrencyRow(
-                                    key: ValueKey(code),
-                                    code: code,
-                                    value: amounts[code] ?? '',
-                                    isActive: code == activeCurrency,
-                                    onTap: () => _onCurrencyTap(code),
-                                    onLongPress: () =>
-                                        _manager.moveCurrencyToTop(code),
-                                    onValueChanged: (value) =>
-                                        _onValueChanged(code, value),
-                                    onDismissed: () =>
-                                        _manager.removeCurrency(code),
-                                  )),
-                              const SizedBox(height: 24),
-                              _buildAddCurrencyButton(context),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
-            // Status bar
-            const StatusBar(),
-            const SizedBox(height: 16),
-          ],
+    return DoubleTapThemeToggle(
+      child: Scaffold(
+      body: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onLongPress: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const SettingsScreen()),
         ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              const SizedBox(height: 48),
+              Expanded(
+                child: ValueListenableBuilder<bool>(
+                  valueListenable: _settings.showLongNameNotifier,
+                  builder: (context, showLongName, _) {
+                    return ValueListenableBuilder<bool>(
+                      valueListenable: _settings.showBaseCurrencyNotifier,
+                      builder: (context, showBaseCurrency, _) {
+                        return ValueListenableBuilder<List<String>>(
+                          valueListenable: _manager.visibleCurrenciesNotifier,
+                          builder: (context, currencies, _) {
+                            return ValueListenableBuilder<Map<String, String>>(
+                              valueListenable: _manager.amountsNotifier,
+                              builder: (context, amounts, _) {
+                                return ValueListenableBuilder<String?>(
+                                  valueListenable: _manager.activeCurrencyNotifier,
+                                  builder: (context, activeCurrency, _) {
+                                    return ListView(
+                                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                                      children: [
+                                        ...currencies.map((code) => CurrencyRow(
+                                              key: ValueKey(code),
+                                              code: code,
+                                              value: amounts[code] ?? '',
+                                              isActive: code == activeCurrency,
+                                              showLongName: showLongName,
+                                              showBaseCurrency: showBaseCurrency,
+                                              onTap: () => _onCurrencyTap(code),
+                                              onLongPress: () =>
+                                                  _manager.moveCurrencyToTop(code),
+                                              onValueChanged: (value) =>
+                                                  _onValueChanged(code, value),
+                                              onDismissed: () =>
+                                                  _manager.removeCurrency(code),
+                                            )),
+                                        const SizedBox(height: 24),
+                                        _buildAddCurrencyButton(context),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                            );
+                          },
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+              const StatusBar(),
+              const SizedBox(height: 16),
+            ],
+          ),
+        ),
+      ),
       ),
     );
   }

@@ -16,13 +16,18 @@ class MarsFX extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeManager = getIt<ThemeManager>();
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Mars FX',
-      theme: themeManager.lightTheme,
-      darkTheme: themeManager.darkTheme,
-      themeMode: ThemeMode.system,
-      home: const MainScreen(),
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: themeManager.themeModeNotifier,
+      builder: (context, themeMode, _) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Mars FX',
+          theme: themeManager.lightTheme,
+          darkTheme: themeManager.darkTheme,
+          themeMode: themeMode,
+          home: const MainScreen(),
+        );
+      },
     );
   }
 }

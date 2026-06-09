@@ -18,10 +18,10 @@ flutter test
 # Lint / static analysis
 flutter analyze
 
-# Build + install debug APK (app name: "Mars FX Debug", package: com.catchingclouds.mars_fx.debug)
+# Run debug (app name: "Mars FX Debug", package: com.catchingclouds.mars_fx.debug)
 ./install_debug.sh
 
-# Build + install release APK (app name: "Mars FX", package: com.catchingclouds.mars_fx)
+# Run release (app name: "Mars FX", package: com.catchingclouds.mars_fx)
 ./install_release.sh
 ```
 

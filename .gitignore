@@ -69,6 +69,14 @@ local.properties
 key.properties
 keystore.properties
 
+# Fastlane secrets
+pc-api.json
+
+# Bundler / Fastlane local install
+.bundle/
+**/vendor/
+fastlane/report.xml
+
 # NDK
 obj/
 .externalNativeBuild

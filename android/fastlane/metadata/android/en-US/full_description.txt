@@ -1,0 +1,12 @@
+Mars FX is a no-fuss currency converter built for speed. Every currency on screen is both an input and an output — tap any row, type a number, and all other currencies update instantly.
+
+No base currency. No extra steps. Just fast, clean conversion.
+
+Features:
+• Live exchange rates via Frankfurter API
+• 30 currencies — pick the ones you actually use
+• Offline-first: cached rates always available
+• Swipe to remove, long-press to pin to top
+• Pure black and white UI — works great in any light
+
+Free to use. No ads, no tracking, no account needed.
