@@ -31,57 +31,142 @@ class CurrencyRow extends StatefulWidget {
   State<CurrencyRow> createState() => _CurrencyRowState();
 }
 
-class _CurrencyRowState extends State<CurrencyRow> {
+enum _DragDir { copy, delete }
+
+class _CurrencyRowState extends State<CurrencyRow> with SingleTickerProviderStateMixin {
   late final TextEditingController _controller;
   final FocusNode _focusNode = FocusNode();
   bool _isEditing = false;
 
   // Right-swipe copy
   double _copyOffset = 0.0;
-  Offset? _pointerStart;
   static const double _copyMax = 72.0;
   static const double _copyThreshold = 52.0;
 
-  void _onPointerDown(PointerDownEvent e) {
-    _pointerStart = e.localPosition;
-  }
+  // Left-swipe delete
+  double _deleteOffset = 0.0;
+  static const double _deleteMax = 80.0;
+  static const double _deleteThreshold = 60.0;
 
-  void _onPointerMove(PointerMoveEvent e) {
-    if (_pointerStart == null) return;
-    final dx = e.localPosition.dx - _pointerStart!.dx;
-    if (dx > 0) {
-      if (!mounted) return;
-      setState(() => _copyOffset = dx.clamp(0.0, _copyMax));
-    }
-  }
+  // Shared drag state
+  Offset? _pointerStart;
+  _DragDir? _dragDir;
+  bool _isAnimating = false;
 
-  void _onPointerUp(PointerUpEvent e) {
-    if (_copyOffset >= _copyThreshold && widget.value.isNotEmpty) {
-      Clipboard.setData(ClipboardData(text: widget.value));
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('${widget.code} · ${widget.value}'),
-        duration: const Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-      ));
-    }
-    _resetCopy();
-  }
-
-  void _onPointerCancel(PointerCancelEvent e) => _resetCopy();
-
-  void _resetCopy() {
-    if (!mounted) return;
-    setState(() {
-      _copyOffset = 0.0;
-      _pointerStart = null;
-    });
-  }
+  // Snap-back / dismiss animation
+  late final AnimationController _snapAnim;
+  late CurvedAnimation _snapCurve;
+  double _snapFrom = 0;
+  double _snapTo = 0;
+  bool _willDismiss = false;
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController(text: widget.value);
     _controller.addListener(_onTextChanged);
+
+    _snapAnim = AnimationController(vsync: this);
+    _snapCurve = CurvedAnimation(parent: _snapAnim, curve: Curves.easeOut);
+    _snapAnim.addListener(_onSnapTick);
+    _snapAnim.addStatusListener(_onSnapStatus);
+  }
+
+  void _onSnapTick() {
+    if (!mounted) return;
+    setState(() {
+      _deleteOffset = _snapFrom + (_snapTo - _snapFrom) * _snapCurve.value;
+    });
+  }
+
+  void _onSnapStatus(AnimationStatus status) {
+    if (status != AnimationStatus.completed) return;
+    _isAnimating = false;
+    if (_willDismiss) {
+      widget.onDismissed();
+    } else {
+      setState(() => _deleteOffset = 0);
+    }
+  }
+
+  void _animateTo(double end, {required bool dismiss}) {
+    _snapFrom = _deleteOffset;
+    _snapTo = end;
+    _willDismiss = dismiss;
+    _isAnimating = true;
+    _snapCurve = CurvedAnimation(
+      parent: _snapAnim,
+      curve: dismiss ? Curves.easeIn : Curves.elasticOut,
+    );
+    _snapAnim.duration = dismiss
+        ? const Duration(milliseconds: 160)
+        : const Duration(milliseconds: 500);
+    _snapAnim.forward(from: 0);
+  }
+
+  void _onPointerDown(PointerDownEvent e) {
+    if (_isAnimating) return;
+    _pointerStart = e.localPosition;
+    _dragDir = null;
+  }
+
+  void _onPointerMove(PointerMoveEvent e) {
+    if (_pointerStart == null || _isAnimating) return;
+    final dx = e.localPosition.dx - _pointerStart!.dx;
+
+    if (_dragDir == null) {
+      if (dx.abs() < 8) return;
+      _dragDir = dx > 0 ? _DragDir.copy : _DragDir.delete;
+    }
+
+    if (_dragDir == _DragDir.copy) {
+      setState(() => _copyOffset = dx.clamp(0.0, _copyMax));
+    } else {
+      setState(() => _deleteOffset = (-dx).clamp(0.0, _deleteMax));
+    }
+  }
+
+  void _onPointerUp(PointerUpEvent e) {
+    if (_dragDir == _DragDir.copy) {
+      if (_copyOffset >= _copyThreshold && widget.value.isNotEmpty) {
+        Clipboard.setData(ClipboardData(text: widget.value));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('${widget.code} · ${widget.value}'),
+          duration: const Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+        ));
+      }
+      _resetDrag();
+    } else if (_dragDir == _DragDir.delete) {
+      if (_deleteOffset >= _deleteThreshold) {
+        _animateTo(MediaQuery.of(context).size.width, dismiss: true);
+      } else {
+        _animateTo(0.0, dismiss: false);
+      }
+      _pointerStart = null;
+      _dragDir = null;
+    } else {
+      _resetDrag();
+    }
+  }
+
+  void _onPointerCancel(PointerCancelEvent e) {
+    if (_deleteOffset > 0) {
+      _animateTo(0.0, dismiss: false);
+      _pointerStart = null;
+      _dragDir = null;
+    } else {
+      _resetDrag();
+    }
+  }
+
+  void _resetDrag() {
+    if (!mounted) return;
+    setState(() {
+      _copyOffset = 0.0;
+      _pointerStart = null;
+      _dragDir = null;
+    });
   }
 
   @override
@@ -138,6 +223,7 @@ class _CurrencyRowState extends State<CurrencyRow> {
     _controller.removeListener(_onTextChanged);
     _controller.dispose();
     _focusNode.dispose();
+    _snapAnim.dispose();
     super.dispose();
   }
 
@@ -146,6 +232,7 @@ class _CurrencyRowState extends State<CurrencyRow> {
     final primary = Theme.of(context).colorScheme.primary;
     final opacity = widget.isActive ? 1.0 : 0.5;
     final copyProgress = (_copyOffset / _copyMax).clamp(0.0, 1.0);
+    final deleteProgress = (_deleteOffset / _deleteMax).clamp(0.0, 1.0);
 
     return Listener(
       onPointerDown: _onPointerDown,
@@ -155,7 +242,6 @@ class _CurrencyRowState extends State<CurrencyRow> {
       child: Stack(
         clipBehavior: Clip.hardEdge,
         children: [
-          // Copy icon revealed by right swipe
           if (_copyOffset > 0)
             Positioned.fill(
               child: Align(
@@ -170,59 +256,61 @@ class _CurrencyRowState extends State<CurrencyRow> {
                 ),
               ),
             ),
-          Transform.translate(
-            offset: Offset(_copyOffset, 0),
-            child: Dismissible(
-              key: ValueKey('dismiss_${widget.code}'),
-              direction: DismissDirection.endToStart,
-              onDismissed: (_) => widget.onDismissed(),
-              background: Container(
+          if (_deleteOffset > 0)
+            Positioned.fill(
+              child: Align(
                 alignment: Alignment.centerRight,
-                padding: const EdgeInsets.only(right: 24),
-                child: Icon(
-                  Icons.delete_outline,
-                  color: primary.withValues(alpha: 0.3),
-                  size: 20,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 24),
+                  child: Icon(
+                    Icons.delete_outline,
+                    size: 20,
+                    color: primary.withValues(
+                      alpha: (deleteProgress * 0.8).clamp(0.0, 0.6),
+                    ),
+                  ),
                 ),
               ),
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  widget.onTap();
-                  _focusNode.requestFocus();
-                  _controller.selection = TextSelection.collapsed(
-                    offset: _controller.text.length,
-                  );
-                },
-                onLongPress: widget.onLongPress,
-                child: Opacity(
-                  opacity: opacity,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
+            ),
+          Transform.translate(
+            offset: Offset(_copyOffset - _deleteOffset, 0),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                widget.onTap();
+                _focusNode.requestFocus();
+                _controller.selection = TextSelection.collapsed(
+                  offset: _controller.text.length,
+                );
+              },
+              onLongPress: widget.onLongPress,
+              child: Opacity(
+                opacity: opacity,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            widget.showLongName
+                                ? (CurrencyData.currencies[widget.code] ?? widget.code)
+                                : widget.code,
+                            style: TEXT_STYLE_CURRENCY_CODE.copyWith(color: primary),
+                          ),
+                          if (widget.showBaseCurrency && widget.code == 'EUR')
                             Text(
-                              widget.showLongName
-                                  ? (CurrencyData.currencies[widget.code] ?? widget.code)
-                                  : widget.code,
-                              style: TEXT_STYLE_CURRENCY_CODE.copyWith(color: primary),
+                              '  ·  base',
+                              style: TEXT_STYLE_CURRENCY_CODE.copyWith(color: COLOR_SECONDARY),
                             ),
-                            if (widget.showBaseCurrency && widget.code == 'EUR')
-                              Text(
-                                '  ·  base',
-                                style: TEXT_STYLE_CURRENCY_CODE.copyWith(color: COLOR_SECONDARY),
-                              ),
-                          ],
-                        ),
-                        const SizedBox(height: 2),
-                        widget.isActive
-                            ? _buildActiveInput(primary)
-                            : _buildInactiveValue(primary),
-                      ],
-                    ),
+                        ],
+                      ),
+                      const SizedBox(height: 2),
+                      widget.isActive
+                          ? _buildActiveInput(primary)
+                          : _buildInactiveValue(primary),
+                    ],
                   ),
                 ),
               ),
