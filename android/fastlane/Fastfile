@@ -70,7 +70,8 @@ platform :android do
   desc "Updates ONLY the Store entries (Title, Description, Images)"
   lane :metadata do
     supply(
-      track: "production", # Or 'alpha', if you want to see it there first
+      track: "production",
+      version_code: sh("grep '^version:' ../../pubspec.yaml | sed 's/.*+//'").strip.to_i,
       skip_upload_apk: true,
       skip_upload_aab: true,
       skip_upload_metadata: false,
