@@ -55,6 +55,7 @@ platform :android do
     upload_to_play_store(
       track: "alpha",              # Where do we take it from?
       track_promote_to: "production", # Where do we push it to?
+      version_code: sh("grep '^version:' ../../pubspec.yaml | sed 's/.*+//'").strip.to_i, # Needed to attach the changelog
 
       skip_upload_apk: true,       # Upload nothing new
       skip_upload_aab: true,
