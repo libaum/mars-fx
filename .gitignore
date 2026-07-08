@@ -95,3 +95,6 @@ output.json
 
 # Environment
 .env
+
+# Archived release APKs (install_release.sh)
+apk_archive/
