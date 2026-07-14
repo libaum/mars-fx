@@ -21,23 +21,15 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 [bundle exec] fastlane android alpha
 ```
 
-Builds a new version and uploads it to the Alpha track (Closed Testing)
+Build & upload a new version to Alpha (draft)
 
-### android upload
-
-```sh
-[bundle exec] fastlane android upload
-```
-
-Uploads the existing AAB to the Alpha track without rebuilding
-
-### android release
+### android production
 
 ```sh
-[bundle exec] fastlane android release
+[bundle exec] fastlane android production
 ```
 
-Promotes the tested Alpha version directly to the Store (Production)
+Build & upload a new version to Production
 
 ### android metadata
 
@@ -45,15 +37,23 @@ Promotes the tested Alpha version directly to the Store (Production)
 [bundle exec] fastlane android metadata
 ```
 
-Updates ONLY the Store entries (Title, Description, Images)
+Update the store listing only (texts, images, screenshots)
 
-### android build
+### android alpha_upload
 
 ```sh
-[bundle exec] fastlane android build
+[bundle exec] fastlane android alpha_upload
 ```
 
-Builds the Flutter Release AAB without uploading
+Upload the existing AAB to Alpha (no rebuild, draft)
+
+### android production_upload
+
+```sh
+[bundle exec] fastlane android production_upload
+```
+
+Upload the existing AAB to Production (no rebuild)
 
 ----
 
