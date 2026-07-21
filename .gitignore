@@ -98,3 +98,6 @@ output.json
 
 # Archived release APKs (install_release.sh)
 apk_archive/
+
+
+.tokensave
