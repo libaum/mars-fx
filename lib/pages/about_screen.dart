@@ -1,9 +1,20 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:mars_fx/pages/widgets/double_tap_theme_toggle.dart';
 import 'package:mars_fx/theme/theme_constants.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+// Shared across all Mars apps (single Play Console developer account).
+const _MARS_DEV_PAGE = 'https://play.google.com/store/apps/dev?id=7784376568737667246';
+// This app's own store listing (published applicationId, no underscore).
+const _STORE_LISTING = 'https://play.google.com/store/apps/details?id=com.catchingclouds.marsfx';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
+
+  Future<void> _open(String url) async {
+    await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,37 +24,83 @@ class AboutScreen extends StatelessWidget {
       child: Scaffold(
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(32, 32, 32, 32),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Mars FX',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.w300, color: primary),
-                ),
-                const SizedBox(height: 32),
-                Text(
-                  'A currency converter I built because the ones on the store were either ugly, bloated, or both.',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300, color: primary, height: 1.7),
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  'Every currency is both input and output.\nTap any row. Type. Everything updates.',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300, color: primary, height: 1.7),
-                ),
-                const SizedBox(height: 24),
-                const Text(
-                  'No ads. No tracking. No accounts.\nJust an app that does one thing well.',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300, color: COLOR_SECONDARY, height: 1.7),
-                ),
-                const SizedBox(height: 24),
-                const Text(
-                  'Rates via Frankfurter API.\nPart of the Mars product family.',
-                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w300, color: COLOR_SECONDARY, height: 1.7),
-                ),
-              ],
+            padding: const EdgeInsets.fromLTRB(28, 20, 28, 20),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Mars FX',
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.w300, color: primary),
+                  ),
+                  const SizedBox(height: 32),
+                  // This app — personal "why" + the single idea.
+                  Text(
+                    'I built this because every currency converter on the store was ugly, bloated, or both.',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300, color: primary, height: 1.7),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Every currency is both input and output.\nTap any row, type, and everything else updates.',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300, color: primary, height: 1.7),
+                  ),
+                  const SizedBox(height: 16),
+                  // API attribution — belongs to this app's rates feature.
+                  Text.rich(TextSpan(
+                    style: TextStyle(fontSize: 13, height: 1.5, color: COLOR_SECONDARY),
+                    children: [
+                      const TextSpan(text: 'Exchange rates by '),
+                      TextSpan(
+                        text: 'frankfurter.dev',
+                        style: TextStyle(color: primary, decoration: TextDecoration.underline),
+                        recognizer: TapGestureRecognizer()..onTap = () => _open('https://frankfurter.dev/'),
+                      ),
+                      const TextSpan(text: '.'),
+                    ],
+                  )),
+                  const SizedBox(height: 32),
+                  const Text('—', style: TextStyle(fontSize: 15, color: COLOR_SECONDARY)),
+                  const SizedBox(height: 32),
+                  // About Mars — shared philosophy, identical across all apps.
+                  const Text(
+                    'Mars — Minimalist And Really Simple. A growing family of small, calm tools built around one idea: solve one problem well, and never fight for your attention. Created by one person out of passion and conviction. No ads. No tracking. Always open source.',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300, color: COLOR_SECONDARY, height: 1.7),
+                  ),
+                  const SizedBox(height: 40),
+                  _LinkRow(label: 'More Mars apps', onTap: () => _open(_MARS_DEV_PAGE)),
+                  _LinkRow(label: 'Rate Mars FX', onTap: () => _open(_STORE_LISTING)),
+                  const SizedBox(height: 20),
+                ],
+              ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LinkRow extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+
+  const _LinkRow({required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(label, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300, color: primary)),
+            ),
+            Icon(Icons.north_east, size: 18, color: primary.withValues(alpha: 0.3)),
+          ],
         ),
       ),
     );
