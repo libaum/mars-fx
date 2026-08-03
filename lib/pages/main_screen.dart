@@ -4,11 +4,9 @@ import 'package:mars_fx/logic/settings_manager.dart';
 import 'package:mars_fx/pages/currency_search_screen.dart';
 import 'package:mars_fx/pages/settings_screen.dart';
 import 'package:mars_fx/pages/widgets/currency_row.dart';
-import 'package:mars_fx/pages/widgets/double_tap_theme_toggle.dart';
 import 'package:mars_fx/pages/widgets/status_bar.dart';
 import 'package:mars_fx/services/service_locator.dart';
 import 'package:mars_fx/theme/theme_constants.dart';
-import 'package:mars_fx/theme/theme_manager.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -23,8 +21,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return DoubleTapThemeToggle(
-      child: Scaffold(
+    return Scaffold(
       body: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onLongPress: () => Navigator.push(
@@ -39,41 +36,39 @@ class _MainScreenState extends State<MainScreen> {
                 child: ValueListenableBuilder<bool>(
                   valueListenable: _settings.showLongNameNotifier,
                   builder: (context, showLongName, _) {
-                    return ValueListenableBuilder<bool>(
-                      valueListenable: _settings.showBaseCurrencyNotifier,
-                      builder: (context, showBaseCurrency, _) {
-                        return ValueListenableBuilder<List<String>>(
-                          valueListenable: _manager.visibleCurrenciesNotifier,
-                          builder: (context, currencies, _) {
-                            return ValueListenableBuilder<Map<String, String>>(
-                              valueListenable: _manager.amountsNotifier,
-                              builder: (context, amounts, _) {
-                                return ValueListenableBuilder<String?>(
-                                  valueListenable: _manager.activeCurrencyNotifier,
-                                  builder: (context, activeCurrency, _) {
-                                    return ListView(
-                                      padding: const EdgeInsets.symmetric(horizontal: 32),
-                                      children: [
-                                        ...currencies.map((code) => CurrencyRow(
-                                              key: ValueKey(code),
-                                              code: code,
-                                              value: amounts[code] ?? '',
-                                              isActive: code == activeCurrency,
-                                              showLongName: showLongName,
-                                              showBaseCurrency: showBaseCurrency,
-                                              onTap: () => _onCurrencyTap(code),
-                                              onLongPress: () =>
-                                                  _manager.moveCurrencyToTop(code),
-                                              onValueChanged: (value) =>
-                                                  _onValueChanged(code, value),
-                                              onDismissed: () =>
-                                                  _manager.removeCurrency(code),
-                                            )),
-                                        const SizedBox(height: 24),
-                                        _buildAddCurrencyButton(context),
-                                      ],
-                                    );
-                                  },
+                    return ValueListenableBuilder<List<String>>(
+                      valueListenable: _manager.visibleCurrenciesNotifier,
+                      builder: (context, currencies, _) {
+                        return ValueListenableBuilder<Map<String, String>>(
+                          valueListenable: _manager.amountsNotifier,
+                          builder: (context, amounts, _) {
+                            return ValueListenableBuilder<String?>(
+                              valueListenable: _manager.activeCurrencyNotifier,
+                              builder: (context, activeCurrency, _) {
+                                return ListView(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 32,
+                                  ),
+                                  children: [
+                                    ...currencies.map(
+                                      (code) => CurrencyRow(
+                                        key: ValueKey(code),
+                                        code: code,
+                                        value: amounts[code] ?? '',
+                                        isActive: code == activeCurrency,
+                                        showLongName: showLongName,
+                                        onTap: () => _onCurrencyTap(code),
+                                        onLongPress: () =>
+                                            _manager.moveCurrencyToTop(code),
+                                        onValueChanged: (value) =>
+                                            _onValueChanged(code, value),
+                                        onDismissed: () =>
+                                            _manager.removeCurrency(code),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 24),
+                                    _buildAddCurrencyButton(context),
+                                  ],
                                 );
                               },
                             );
@@ -89,7 +84,6 @@ class _MainScreenState extends State<MainScreen> {
             ],
           ),
         ),
-      ),
       ),
     );
   }
@@ -112,9 +106,7 @@ class _MainScreenState extends State<MainScreen> {
       onTap: () async {
         final result = await Navigator.push<String>(
           context,
-          MaterialPageRoute(
-            builder: (_) => const CurrencySearchScreen(),
-          ),
+          MaterialPageRoute(builder: (_) => const CurrencySearchScreen()),
         );
         if (result != null) {
           _manager.addCurrency(result);
@@ -123,7 +115,7 @@ class _MainScreenState extends State<MainScreen> {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: Text(
-          '+ Add Currency',
+          '+ Add currency',
           style: TEXT_STYLE_ADD_CURRENCY.copyWith(
             color: primary.withValues(alpha: 0.4),
           ),

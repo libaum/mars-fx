@@ -8,7 +8,6 @@ class LocalStorageService {
   static const _keyVisibleCurrencies = 'visible_currencies';
   static const _keyThemeIsDark = 'theme_is_dark';
   static const _keyShowLongName = 'show_long_name';
-  static const _keyShowBaseCurrency = 'show_base_currency';
 
   final SharedPreferences _prefs;
 
@@ -66,7 +65,4 @@ class LocalStorageService {
   /// Display settings
   bool getShowLongName() => _prefs.getBool(_keyShowLongName) ?? false;
   Future<void> setShowLongName(bool v) => _prefs.setBool(_keyShowLongName, v);
-
-  bool getShowBaseCurrency() => _prefs.getBool(_keyShowBaseCurrency) ?? false;
-  Future<void> setShowBaseCurrency(bool v) => _prefs.setBool(_keyShowBaseCurrency, v);
 }

@@ -12,17 +12,35 @@ dependencies:
   http: ^1.2.0
   shared_preferences: ^2.3.4
   get_it: ^9.0.0
+  url_launcher: ^6.3.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.1
+  flutter_native_splash: ^2.4.6
 
 flutter_launcher_icons:
   android: true
   ios: false
   image_path: "assets/icon.png"
+  adaptive_icon_background: "#000000"
+  adaptive_icon_foreground: "assets/icon_fg.png"
+
+flutter_native_splash:
+  color: "#000000"
+  image: assets/icon_fg.png
+  color_dark: "#000000"
+  image_dark: assets/icon_fg.png
+  android: true
+  ios: false
+  web: false
+  android_12:
+    color: "#000000"
+    image: assets/icon_fg.png
+    color_dark: "#000000"
+    image_dark: assets/icon_fg.png
 
 flutter:
   uses-material-design: true

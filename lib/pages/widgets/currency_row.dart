@@ -8,7 +8,6 @@ class CurrencyRow extends StatefulWidget {
   final String value;
   final bool isActive;
   final bool showLongName;
-  final bool showBaseCurrency;
   final VoidCallback onTap;
   final VoidCallback onLongPress;
   final ValueChanged<String> onValueChanged;
@@ -20,7 +19,6 @@ class CurrencyRow extends StatefulWidget {
     required this.value,
     required this.isActive,
     this.showLongName = false,
-    this.showBaseCurrency = false,
     required this.onTap,
     required this.onLongPress,
     required this.onValueChanged,
@@ -33,7 +31,8 @@ class CurrencyRow extends StatefulWidget {
 
 enum _DragDir { copy, delete }
 
-class _CurrencyRowState extends State<CurrencyRow> with SingleTickerProviderStateMixin {
+class _CurrencyRowState extends State<CurrencyRow>
+    with SingleTickerProviderStateMixin {
   late final TextEditingController _controller;
   final FocusNode _focusNode = FocusNode();
   bool _isEditing = false;
@@ -130,11 +129,13 @@ class _CurrencyRowState extends State<CurrencyRow> with SingleTickerProviderStat
     if (_dragDir == _DragDir.copy) {
       if (_copyOffset >= _copyThreshold && widget.value.isNotEmpty) {
         Clipboard.setData(ClipboardData(text: widget.value));
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('${widget.code} · ${widget.value}'),
-          duration: const Duration(seconds: 2),
-          behavior: SnackBarBehavior.floating,
-        ));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${widget.code} · ${widget.value}'),
+            duration: const Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
       }
       _resetDrag();
     } else if (_dragDir == _DragDir.delete) {
@@ -178,7 +179,9 @@ class _CurrencyRowState extends State<CurrencyRow> with SingleTickerProviderStat
       if (_controller.text.replaceAll(' ', '') != raw) {
         _controller.text = widget.isActive ? _formatDisplay(raw) : raw;
         if (widget.isActive) {
-          _controller.selection = TextSelection.collapsed(offset: _controller.text.length);
+          _controller.selection = TextSelection.collapsed(
+            offset: _controller.text.length,
+          );
         }
       }
     }
@@ -291,20 +294,14 @@ class _CurrencyRowState extends State<CurrencyRow> with SingleTickerProviderStat
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          Text(
-                            widget.showLongName
-                                ? (CurrencyData.currencies[widget.code] ?? widget.code)
-                                : widget.code,
-                            style: TEXT_STYLE_CURRENCY_CODE.copyWith(color: primary),
-                          ),
-                          if (widget.showBaseCurrency && widget.code == 'EUR')
-                            Text(
-                              '  ·  base',
-                              style: TEXT_STYLE_CURRENCY_CODE.copyWith(color: COLOR_SECONDARY),
-                            ),
-                        ],
+                      Text(
+                        widget.showLongName
+                            ? (CurrencyData.currencies[widget.code] ??
+                                  widget.code)
+                            : widget.code,
+                        style: TEXT_STYLE_CURRENCY_CODE.copyWith(
+                          color: primary,
+                        ),
                       ),
                       const SizedBox(height: 2),
                       widget.isActive
@@ -341,7 +338,9 @@ class _CurrencyRowState extends State<CurrencyRow> with SingleTickerProviderStat
                   color: color.withValues(alpha: 0.2),
                 ),
               ),
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
                 _ThousandsSeparatorFormatter(),
@@ -369,15 +368,16 @@ class _CurrencyRowState extends State<CurrencyRow> with SingleTickerProviderStat
   Widget _buildInactiveValue(Color color) {
     final display = widget.value.isEmpty ? '' : _formatDisplay(widget.value);
     return SizedBox(
-      height: TEXT_STYLE_CURRENCY_VALUE.fontSize! * (TEXT_STYLE_CURRENCY_VALUE.height ?? 1.2) + 4,
+      height:
+          TEXT_STYLE_CURRENCY_VALUE.fontSize! *
+              (TEXT_STYLE_CURRENCY_VALUE.height ?? 1.2) +
+          4,
       child: Align(
         alignment: Alignment.centerLeft,
         child: Text(
           display.isEmpty ? '0' : display,
           style: TEXT_STYLE_CURRENCY_VALUE.copyWith(
-            color: widget.value.isEmpty
-                ? color.withValues(alpha: 0.2)
-                : color,
+            color: widget.value.isEmpty ? color.withValues(alpha: 0.2) : color,
           ),
         ),
       ),

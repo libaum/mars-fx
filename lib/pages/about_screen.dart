@@ -1,13 +1,14 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:mars_fx/pages/widgets/double_tap_theme_toggle.dart';
 import 'package:mars_fx/theme/theme_constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Shared across all Mars apps (single Play Console developer account).
-const _MARS_DEV_PAGE = 'https://play.google.com/store/apps/dev?id=7784376568737667246';
+const _MARS_DEV_PAGE =
+    'https://play.google.com/store/apps/dev?id=7784376568737667246';
 // This app's own store listing (published applicationId, no underscore).
-const _STORE_LISTING = 'https://play.google.com/store/apps/details?id=com.catchingclouds.marsfx';
+const _STORE_LISTING =
+    'https://play.google.com/store/apps/details?id=com.catchingclouds.marsfx';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
@@ -20,58 +21,94 @@ class AboutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
 
-    return DoubleTapThemeToggle(
-      child: Scaffold(
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(28, 20, 28, 20),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Mars FX',
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.w300, color: primary),
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(28, 20, 28, 20),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Mars FX',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w300,
+                    color: primary,
                   ),
-                  const SizedBox(height: 32),
-                  // This app — personal "why" + the single idea.
-                  Text(
-                    'I built this because every currency converter on the store was ugly, bloated, or both.',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300, color: primary, height: 1.7),
+                ),
+                const SizedBox(height: 32),
+                // This app — personal "why" + the single idea.
+                Text(
+                  'I built this because every currency converter on the store was ugly, bloated, or both.',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w300,
+                    color: primary,
+                    height: 1.7,
                   ),
-                  const SizedBox(height: 24),
-                  Text(
-                    'Every currency is both input and output.\nTap any row, type, and everything else updates.',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300, color: primary, height: 1.7),
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  'Every currency is both input and output.\nTap any row, type, and everything else updates.',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w300,
+                    color: primary,
+                    height: 1.7,
                   ),
-                  const SizedBox(height: 16),
-                  // API attribution — belongs to this app's rates feature.
-                  Text.rich(TextSpan(
-                    style: TextStyle(fontSize: 13, height: 1.5, color: COLOR_SECONDARY),
+                ),
+                const SizedBox(height: 16),
+                // API attribution — belongs to this app's rates feature.
+                Text.rich(
+                  TextSpan(
+                    style: TextStyle(
+                      fontSize: 13,
+                      height: 1.5,
+                      color: COLOR_SECONDARY,
+                    ),
                     children: [
                       const TextSpan(text: 'Exchange rates by '),
                       TextSpan(
                         text: 'frankfurter.dev',
-                        style: TextStyle(color: primary, decoration: TextDecoration.underline),
-                        recognizer: TapGestureRecognizer()..onTap = () => _open('https://frankfurter.dev/'),
+                        style: TextStyle(
+                          color: primary,
+                          decoration: TextDecoration.underline,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () => _open('https://frankfurter.dev/'),
                       ),
                       const TextSpan(text: '.'),
                     ],
-                  )),
-                  const SizedBox(height: 32),
-                  const Text('—', style: TextStyle(fontSize: 15, color: COLOR_SECONDARY)),
-                  const SizedBox(height: 32),
-                  // About Mars — shared philosophy, identical across all apps.
-                  const Text(
-                    'Mars — Minimalist And Really Simple. A growing family of small, calm tools built around one idea: solve one problem well, and never fight for your attention. Created by one person out of passion and conviction. Forever open source. No ads. No tracking.',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300, color: COLOR_SECONDARY, height: 1.7),
                   ),
-                  const SizedBox(height: 40),
-                  _LinkRow(label: 'More Mars apps', onTap: () => _open(_MARS_DEV_PAGE)),
-                  _LinkRow(label: 'Rate Mars FX', onTap: () => _open(_STORE_LISTING)),
-                  const SizedBox(height: 20),
-                ],
-              ),
+                ),
+                const SizedBox(height: 32),
+                const Text(
+                  '—',
+                  style: TextStyle(fontSize: 15, color: COLOR_SECONDARY),
+                ),
+                const SizedBox(height: 32),
+                // About Mars — shared philosophy, identical across all apps.
+                const Text(
+                  'Mars — Minimalist And Really Simple. A growing family of small, calm tools built around one idea: solve one problem well, and never fight for your attention. Created by one person out of passion and conviction. Forever open source. No ads. No tracking.',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w300,
+                    color: COLOR_SECONDARY,
+                    height: 1.7,
+                  ),
+                ),
+                const SizedBox(height: 40),
+                _LinkRow(
+                  label: 'More Mars apps',
+                  onTap: () => _open(_MARS_DEV_PAGE),
+                ),
+                _LinkRow(
+                  label: 'Rate Mars FX',
+                  onTap: () => _open(_STORE_LISTING),
+                ),
+                const SizedBox(height: 20),
+              ],
             ),
           ),
         ),
@@ -89,18 +126,37 @@ class _LinkRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(label, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300, color: primary)),
-            ),
-            Icon(Icons.north_east, size: 18, color: primary.withValues(alpha: 0.3)),
-          ],
+    return SizedBox(
+      width: double.infinity,
+      child: TextButton(
+        onPressed: onTap,
+        style: TextButton.styleFrom(
+          padding: EdgeInsets.zero,
+          minimumSize: Size.zero,
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          alignment: Alignment.centerLeft,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w300,
+                    color: primary,
+                  ),
+                ),
+              ),
+              Icon(
+                Icons.north_east,
+                size: 18,
+                color: primary.withValues(alpha: 0.3),
+              ),
+            ],
+          ),
         ),
       ),
     );

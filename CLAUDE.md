@@ -100,13 +100,14 @@ lib/
 - **Naming**: Constants use `SCREAMING_CASE` (matches Mars Launcher)
 - **Font**: Outfit with tabular figures for stable number alignment
 - **Colors**: Pure black/white only; `COLOR_SECONDARY` (gray) for secondary text
-- **Package name**: `com.catchingclouds.mars_fx` (debug: `.debug` suffix)
+- **Dart package name**: `mars_fx` (snake_case, used in imports — unrelated to the store)
+- **Android applicationId (the published store id)**: `com.catchingclouds.marsfx` — note: no underscore, and it differs from the Dart package name. This is permanent on Play; do not derive store/deep links from the Dart name.
 
 ## Build Variants
 
-| Variant | Package Name | App Name |
+| Variant | applicationId | App Name |
 |---------|-------------|----------|
-| Debug | `com.catchingclouds.mars_fx.debug` | Mars FX Debug |
-| Release | `com.catchingclouds.mars_fx` | Mars FX |
+| Debug | `com.catchingclouds.marsfx.debug` | Mars FX Debug |
+| Release | `com.catchingclouds.marsfx` | Mars FX |
 
 Both can be installed simultaneously on the same device.
