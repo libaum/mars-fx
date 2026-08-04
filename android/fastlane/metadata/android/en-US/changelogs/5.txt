@@ -1,0 +1,1 @@
+New settings design with quick appearance toggle. Swipe gestures for delete/copy on currency rows. Removed base currency marker. Refreshed splash screen and app icon.
