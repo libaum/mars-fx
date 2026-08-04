@@ -46,9 +46,6 @@ class _MainScreenState extends State<MainScreen> {
                               valueListenable: _manager.activeCurrencyNotifier,
                               builder: (context, activeCurrency, _) {
                                 return ListView(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 32,
-                                  ),
                                   children: [
                                     ...currencies.map(
                                       (code) => CurrencyRow(
@@ -67,7 +64,12 @@ class _MainScreenState extends State<MainScreen> {
                                       ),
                                     ),
                                     const SizedBox(height: 24),
-                                    _buildAddCurrencyButton(context),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 32,
+                                      ),
+                                      child: _buildAddCurrencyButton(context),
+                                    ),
                                   ],
                                 );
                               },
