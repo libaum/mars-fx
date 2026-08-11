@@ -23,7 +23,7 @@ class MarsFX extends StatelessWidget {
       builder: (context, themeMode, _) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'Mars FX',
+          title: 'Mars Currency',
           theme: themeManager.lightTheme,
           darkTheme: themeManager.darkTheme,
           themeMode: themeMode,

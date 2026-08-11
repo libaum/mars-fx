@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-# Build, archive and install the RELEASE build of Mars FX.
+# Build, archive and install the RELEASE build of Mars Currency.
 #   applicationId: com.catchingclouds.marsfx  (release-signed)
 # Every build is archived under apk_archive/ so a known-good version can be
 # reinstalled later without rebuilding — handy when a new build regresses.

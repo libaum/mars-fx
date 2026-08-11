@@ -1,4 +1,4 @@
-Mars FX is a no-fuss currency converter built for speed. Every currency on screen is both an input and an output — tap any row, type a number, and all other currencies update instantly.
+Mars Currency is a no-fuss currency converter built for speed. Every currency on screen is both an input and an output — tap any row, type a number, and all other currencies update instantly.
 
 No base currency. No extra steps. Just fast, clean conversion.
 

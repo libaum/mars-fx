@@ -4,7 +4,7 @@ This file provides guidance when working with code in this repository.
 
 ## Project Overview
 
-Mars FX is a minimal Flutter Android currency converter. Every currency is both an input and an output — tap any row, type a value, and all other visible currencies update instantly. Part of the Mars product family.
+Mars Currency is a minimal Flutter Android currency converter. Every currency is both an input and an output — tap any row, type a value, and all other visible currencies update instantly. Part of the Mars product family.
 
 ## Common Commands
 
@@ -18,10 +18,10 @@ flutter test
 # Lint / static analysis
 flutter analyze
 
-# Run debug (app name: "Mars FX Debug", package: com.catchingclouds.mars_fx.debug)
+# Run debug (app name: "Mars Currency Debug", package: com.catchingclouds.mars_fx.debug)
 ./install_debug.sh
 
-# Run release (app name: "Mars FX", package: com.catchingclouds.mars_fx)
+# Run release (app name: "Mars Currency", package: com.catchingclouds.mars_fx)
 ./install_release.sh
 ```
 
@@ -107,7 +107,7 @@ lib/
 
 | Variant | applicationId | App Name |
 |---------|-------------|----------|
-| Debug | `com.catchingclouds.marsfx.debug` | Mars FX Debug |
-| Release | `com.catchingclouds.marsfx` | Mars FX |
+| Debug | `com.catchingclouds.marsfx.debug` | Mars Currency Debug |
+| Release | `com.catchingclouds.marsfx` | Mars Currency |
 
 Both can be installed simultaneously on the same device.

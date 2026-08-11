@@ -30,7 +30,7 @@ class AboutScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Mars FX',
+                  'Mars Currency',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w300,
@@ -104,7 +104,7 @@ class AboutScreen extends StatelessWidget {
                   onTap: () => _open(_MARS_DEV_PAGE),
                 ),
                 _LinkRow(
-                  label: 'Rate Mars FX',
+                  label: 'Rate Mars Currency',
                   onTap: () => _open(_STORE_LISTING),
                 ),
                 const SizedBox(height: 20),

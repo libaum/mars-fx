@@ -1,4 +1,4 @@
-# Mars FX
+# Mars Currency
 
 Ultra-minimal currency converter for Android.
 
@@ -16,10 +16,10 @@ Every currency is both an input and an output. Tap any row, type a value, and al
 ## Install
 
 ```bash
-# Debug (installs as "Mars FX Debug")
+# Debug (installs as "Mars Currency Debug")
 ./install_debug.sh
 
-# Release (installs as "Mars FX")
+# Release (installs as "Mars Currency")
 ./install_release.sh
 ```
 

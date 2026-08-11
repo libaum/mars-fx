@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET" />
     <application
-        android:label="Mars FX"
+        android:label="Mars Currency"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
