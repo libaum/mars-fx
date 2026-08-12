@@ -1,12 +1,11 @@
-Mars Currency ist ein unkomplizierter Währungsrechner für Tempo. Jede Währung auf dem Bildschirm ist gleichzeitig Eingabe und Ausgabe – tippe auf eine Zeile, gib eine Zahl ein, und alle anderen Währungen aktualisieren sich sofort.
+Ein Währungsrechner, bei dem jede Zeile gleichzeitig Ein- und Ausgabe ist. Tippe auf eine Währung, gib eine Zahl ein, und alle anderen aktualisieren sich sofort. Keine Basiswährung, keine Umwege.
 
-Keine Basiswährung. Keine Umwege. Einfach schnelle, klare Umrechnung.
+- 30 Währungen zur Auswahl, tippe, um zwischen beliebigen umzurechnen
+- Aktuelle Kurse bei jedem App-Start, zwischengespeichert, damit es auch offline funktioniert
+- Nach links wischen zum Entfernen, nach rechts zum Kopieren des Betrags, gedrückt halten schiebt eine Währung nach oben
+- Reines Schwarz-Weiß, Dark- oder Light-Mode in den Einstellungen wählbar
+- Keine Werbung, kein Tracking, kein Konto nötig
 
-Funktionen:
-• Aktuelle Wechselkurse über die Frankfurter API
-• 30 Währungen – wähle die, die du wirklich brauchst
-• Offline-first: gespeicherte Kurse immer verfügbar
-• Wischen zum Entfernen, langes Drücken zum Anpinnen nach oben
-• Reines Schwarz-Weiß-Design – funktioniert bei jedem Licht
+Ich habe das gebaut, weil jeder Währungsrechner, den ich fand, entweder hässlich, überladen oder beides war. Ich wollte einfach eine klare Liste, in der jede Zahl mit jeder anderen spricht, mehr nicht.
 
-Kostenlos. Keine Werbung, kein Tracking, kein Konto nötig.
+Mars — Minimalist And Really Simple. Eine wachsende Familie kleiner, ruhiger Tools nach einer Idee: ein Problem gut lösen und nie um deine Aufmerksamkeit kämpfen. Keine Werbung, kein Tracking, nichts, das dich fesseln soll. Von einer Person gemacht, aus Überzeugung — Werkzeuge, die für dich arbeiten, nicht gegen dich.

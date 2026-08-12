@@ -1,1 +1,1 @@
-Tippe auf eine Währung, gib einen Wert ein – alle anderen aktualisieren sich.
+Tippe auf eine Währung, gib einen Wert ein. Alle anderen aktualisieren sich.

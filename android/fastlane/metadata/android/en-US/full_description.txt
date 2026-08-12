@@ -1,12 +1,11 @@
-Mars Currency is a no-fuss currency converter built for speed. Every currency on screen is both an input and an output — tap any row, type a number, and all other currencies update instantly.
+A currency converter where every row is both input and output. Tap any currency, type a number, and all the others update instantly. No base currency, no extra steps.
 
-No base currency. No extra steps. Just fast, clean conversion.
+- 30 currencies to choose from, tap to convert between any of them
+- Fresh rates each time you open the app, cached so it still works offline
+- Swipe left to remove a currency, right to copy the amount, hold to move one to the top
+- Pure black and white, switch between dark and light in settings
+- No ads, no tracking, no account needed
 
-Features:
-• Live exchange rates via Frankfurter API
-• 30 currencies — pick the ones you actually use
-• Offline-first: cached rates always available
-• Swipe to remove, long-press to pin to top
-• Pure black and white UI — works great in any light
+I built this because every currency converter I found was either ugly, bloated, or both. I wanted one clean list where every number talks to every other number, nothing more.
 
-Free to use. No ads, no tracking, no account needed.
+Mars — Minimalist And Really Simple. A growing family of small, calm tools built around one idea: solve one problem well, and never fight for your attention. No ads, no tracking, nothing built to keep you hooked. Made by one person, out of conviction — tools that work for you, not on you.
