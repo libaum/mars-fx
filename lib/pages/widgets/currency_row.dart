@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mars_fx/domain/currency_data.dart';
@@ -42,7 +43,6 @@ class _CurrencyRowState extends State<CurrencyRow> {
   /// Set from the LayoutBuilder below — the travel limit is width-relative.
   double _maxReveal = 0;
 
-  Offset? _pointerStart;
   double _drag = 0;
 
   /// True once the row is pulled all the way to the stop. Only then does
@@ -57,14 +57,8 @@ class _CurrencyRowState extends State<CurrencyRow> {
     _controller.addListener(_onTextChanged);
   }
 
-  void _onPointerDown(PointerDownEvent e) {
-    _pointerStart = e.localPosition;
-  }
-
-  void _onPointerMove(PointerMoveEvent e) {
-    if (_pointerStart == null) return;
-    final dx = e.localPosition.dx - _pointerStart!.dx;
-    final drag = dx.clamp(-_maxReveal, _maxReveal);
+  void _onDragUpdate(DragUpdateDetails d) {
+    final drag = (_drag + d.delta.dx).clamp(-_maxReveal, _maxReveal);
     final armed = _maxReveal > 0 && drag.abs() >= _maxReveal - 0.5;
     if (armed && !_armed) HapticFeedback.mediumImpact();
     setState(() {
@@ -73,24 +67,15 @@ class _CurrencyRowState extends State<CurrencyRow> {
     });
   }
 
-  void _onPointerUp(PointerUpEvent e) {
+  void _onDragEnd(DragEndDetails d) {
     final delete = _armed && _drag < 0;
     final copy = _armed && _drag > 0 && widget.value.isNotEmpty;
     setState(() {
-      _pointerStart = null;
       _drag = 0;
       _armed = false;
     });
     if (delete) widget.onDismissed();
     if (copy) Clipboard.setData(ClipboardData(text: widget.value));
-  }
-
-  void _onPointerCancel(PointerCancelEvent e) {
-    setState(() {
-      _pointerStart = null;
-      _drag = 0;
-      _armed = false;
-    });
   }
 
   @override
@@ -167,11 +152,17 @@ class _CurrencyRowState extends State<CurrencyRow> {
     return LayoutBuilder(
       builder: (context, constraints) {
         _maxReveal = constraints.maxWidth * _maxRevealFraction;
-        return Listener(
-          onPointerDown: _onPointerDown,
-          onPointerMove: _onPointerMove,
-          onPointerUp: _onPointerUp,
-          onPointerCancel: _onPointerCancel,
+        return RawGestureDetector(
+          behavior: HitTestBehavior.opaque,
+          gestures: <Type, GestureRecognizerFactory>{
+            _RowSwipeDragRecognizer:
+                GestureRecognizerFactoryWithHandlers<_RowSwipeDragRecognizer>(
+                  () => _RowSwipeDragRecognizer(),
+                  (instance) => instance
+                    ..onUpdate = _onDragUpdate
+                    ..onEnd = _onDragEnd,
+                ),
+          },
           child: Stack(
             children: [
               if (_drag != 0)
@@ -345,5 +336,39 @@ class _ThousandsSeparatorFormatter extends TextInputFormatter {
       text: formatted,
       selection: TextSelection.collapsed(offset: formatted.length),
     );
+  }
+}
+
+/// A horizontal-drag recognizer that only commits the row swipe once the
+/// finger has moved clearly and mostly sideways. A plain [GestureDetector]'s
+/// horizontal-drag handlers react to the smallest sideways wobble during an
+/// otherwise vertical list scroll, which reads as jitter; this mirrors
+/// mars_thoughts' `_RowSwipeDragRecognizer` instead.
+class _RowSwipeDragRecognizer extends HorizontalDragGestureRecognizer {
+  static const _slop = 20.0;
+
+  Offset? _origin;
+
+  @override
+  void addAllowedPointer(PointerDownEvent event) {
+    _origin = event.position;
+    super.addAllowedPointer(event);
+  }
+
+  @override
+  void handleEvent(PointerEvent event) {
+    if (event is PointerMoveEvent && _origin != null) {
+      final delta = event.position - _origin!;
+      if (delta.dx.abs() > _slop || delta.dy.abs() > _slop) {
+        if (delta.dx.abs() > delta.dy.abs() * 1.5) {
+          resolve(GestureDisposition.accepted);
+        } else {
+          resolve(GestureDisposition.rejected);
+          stopTrackingPointer(event.pointer);
+          return;
+        }
+      }
+    }
+    super.handleEvent(event);
   }
 }
