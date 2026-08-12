@@ -1,7 +1,7 @@
 name: mars_fx
 description: "Mars Currency — Ultra-minimal currency converter."
 publish_to: 'none'
-version: 0.1.3+5
+version: 1.0.0+6
 
 environment:
   sdk: ^3.11.0

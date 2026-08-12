@@ -1,0 +1,1 @@
+Refreshed app icon and splash screen. Fixed swipe-to-delete accidentally triggering while scrolling the list.
