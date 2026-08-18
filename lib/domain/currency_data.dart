@@ -74,4 +74,36 @@ class CurrencyData {
     'CHF',
     'JPY',
   ];
+
+  /// Currencies shown without decimal places.
+  ///
+  /// Either the minor unit does not exist (JPY, KRW, ISK, XPF, CLP) or it has
+  /// gone extinct because one of them is worth well under a euro cent — nobody
+  /// quotes fillér, hào or paisa any more. Showing "3 015 027.00 VND" is noise,
+  /// not precision. Currencies where the minor unit is still quoted stay out of
+  /// this set, even when the number is largish: INR prices really do carry
+  /// paise.
+  static const Set<String> zeroDecimalCurrencies = {
+    'ARS',
+    'CLP',
+    'COP',
+    'CRC',
+    'HUF',
+    'IDR',
+    'ISK',
+    'JPY',
+    'KES',
+    'KHR',
+    'KRW',
+    'LAK',
+    'LKR',
+    'NPR',
+    'RSD',
+    'TZS',
+    'VND',
+    'XPF',
+  };
+
+  /// Whether [code] is displayed and entered without decimals.
+  static bool isZeroDecimal(String code) => zeroDecimalCurrencies.contains(code);
 }

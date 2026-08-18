@@ -49,18 +49,26 @@ class CurrencyListManager {
     final amounts = <String, String>{};
     for (final code in visibleCurrenciesNotifier.value) {
       if (code == active) {
-        amounts[code] = _formatAmount(_activeAmount);
+        amounts[code] = _formatAmount(_activeAmount, code);
       } else {
         final converted =
             CurrencyConverter.convert(_activeAmount, active, code, rates);
-        amounts[code] = converted != null ? _formatAmount(converted) : '';
+        amounts[code] = converted != null ? _formatAmount(converted, code) : '';
       }
     }
     amountsNotifier.value = Map.from(amounts);
   }
 
-  String _formatAmount(double value) {
+  String _formatAmount(double value, String code) {
     if (value == 0) return '';
+    // Currencies without a meaningful minor unit are always whole numbers —
+    // even below 1, where a fractional yen or dong says nothing.
+    if (CurrencyData.isZeroDecimal(code)) {
+      final str = value.toStringAsFixed(0);
+      // A sub-unit amount rounds away to nothing; show the placeholder
+      // instead of a bare "0", same as the value == 0 case above.
+      return str == '0' ? '' : str;
+    }
     // For large values (>= 1), show max 2 decimal places, strip trailing zeros
     // For small values (< 1), show up to 4 decimal places
     if (value >= 1) {

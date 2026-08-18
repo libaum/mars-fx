@@ -45,6 +45,10 @@ class _CurrencyRowState extends State<CurrencyRow> {
 
   double _drag = 0;
 
+  /// Currencies without a meaningful minor unit take whole numbers only —
+  /// the decimal key is gone and a pasted fraction is dropped.
+  bool get _isZeroDecimal => CurrencyData.isZeroDecimal(widget.code);
+
   /// True once the row is pulled all the way to the stop. Only then does
   /// releasing it do anything — a half-hearted swipe is always a no-op.
   /// Hitting the stop ticks once so you can feel the action is loaded.
@@ -265,11 +269,13 @@ class _CurrencyRowState extends State<CurrencyRow> {
                   color: color.withValues(alpha: 0.2),
                 ),
               ),
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
+              keyboardType: TextInputType.numberWithOptions(
+                decimal: !_isZeroDecimal,
               ),
               inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+                FilteringTextInputFormatter.allow(
+                  _isZeroDecimal ? RegExp(r'\d') : RegExp(r'[\d.]'),
+                ),
                 _ThousandsSeparatorFormatter(),
               ],
               onEditingComplete: () {},
