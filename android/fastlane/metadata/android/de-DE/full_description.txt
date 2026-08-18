@@ -1,6 +1,6 @@
 Ein Währungsrechner, bei dem jede Zeile gleichzeitig Ein- und Ausgabe ist. Tippe auf eine Währung, gib eine Zahl ein, und alle anderen aktualisieren sich sofort. Keine Basiswährung, keine Umwege.
 
-- 30 Währungen zur Auswahl, tippe, um zwischen beliebigen umzurechnen
+- 60 Währungen zur Auswahl, tippe, um zwischen beliebigen umzurechnen
 - Aktuelle Kurse bei jedem App-Start, zwischengespeichert, damit es auch offline funktioniert
 - Nach links wischen zum Entfernen, nach rechts zum Kopieren des Betrags, gedrückt halten schiebt eine Währung nach oben
 - Reines Schwarz-Weiß, Dark- oder Light-Mode in den Einstellungen wählbar

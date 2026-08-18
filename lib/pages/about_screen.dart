@@ -70,13 +70,13 @@ class AboutScreen extends StatelessWidget {
                     children: [
                       const TextSpan(text: 'Exchange rates by '),
                       TextSpan(
-                        text: 'frankfurter.dev',
+                        text: 'exchangerate-api.com',
                         style: TextStyle(
                           color: primary,
                           decoration: TextDecoration.underline,
                         ),
                         recognizer: TapGestureRecognizer()
-                          ..onTap = () => _open('https://frankfurter.dev/'),
+                          ..onTap = () => _open('https://www.exchangerate-api.com/'),
                       ),
                       const TextSpan(text: '.'),
                     ],

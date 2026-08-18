@@ -39,17 +39,17 @@ Managers expose state via `ValueNotifier`. UI widgets subscribe with `ValueListe
 
 | Class | Responsibility |
 |---|---|
-| `ExchangeRateService` | HTTP client for Frankfurter API (`api.frankfurter.app/latest`) |
+| `ExchangeRateService` | HTTP client for ExchangeRate-API (`open.er-api.com/v6/latest/EUR`) |
 | `LocalStorageService` | SharedPreferences wrapper for cached rates, visible currencies, timestamps |
 | `ExchangeRateRepository` | Coordinates API ↔ cache; offline-first (cache loads first, refresh in background) |
 | `CurrencyConverter` | Pure stateless conversion logic; all rates EUR-based internally |
-| `CurrencyData` | Static map of ISO code → full currency name (30 currencies) |
+| `CurrencyData` | Static map of ISO code → full currency name (60 currencies — a curated subset of what the API offers) |
 | `CurrencyListManager` | Manages visible list, active input currency, computed amounts, reordering |
 | `ThemeManager` | Light/dark mode following system theme |
 
 ### Conversion Model
 
-All exchange rates from Frankfurter API are EUR-based. EUR has an implicit rate of 1.0. Conversion formula: `amount / rates[from] * rates[to]`. The user never sees a "base currency" — any row can be tapped to become the input.
+Rates are requested with EUR as the base, so all rates are EUR-based. EUR has an implicit rate of 1.0. Conversion formula: `amount / rates[from] * rates[to]`. The user never sees a "base currency" — any row can be tapped to become the input.
 
 ### Persistence
 
@@ -65,7 +65,7 @@ No backend, no remote sync.
 ```
 lib/
 ├── data/
-│   ├── exchange_rate_service.dart    # Frankfurter API client
+│   ├── exchange_rate_service.dart    # ExchangeRate-API client
 │   ├── exchange_rate_repository.dart # Offline-first cache coordinator
 │   └── local_storage_service.dart    # SharedPreferences wrapper
 ├── domain/

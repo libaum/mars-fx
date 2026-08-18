@@ -1,6 +1,6 @@
 A currency converter where every row is both input and output. Tap any currency, type a number, and all the others update instantly. No base currency, no extra steps.
 
-- 30 currencies to choose from, tap to convert between any of them
+- 60 currencies to choose from, tap to convert between any of them
 - Fresh rates each time you open the app, cached so it still works offline
 - Swipe left to remove a currency, right to copy the amount, hold to move one to the top
 - Pure black and white, switch between dark and light in settings
