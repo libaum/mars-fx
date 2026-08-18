@@ -82,7 +82,13 @@ class CurrencyListManager {
     } else {
       final str = value.toStringAsFixed(4);
       final trimmed = str.replaceAll(RegExp(r'0+$'), '');
-      return trimmed.endsWith('.') ? trimmed.substring(0, trimmed.length - 1) : trimmed;
+      final result = trimmed.endsWith('.')
+          ? trimmed.substring(0, trimmed.length - 1)
+          : trimmed;
+      // Below the fourth decimal there is nothing left to show — a single dong
+      // in euros is not a zero, but it is not a number worth printing either.
+      // Show the placeholder rather than a hard "0", same as value == 0 above.
+      return result == '0' ? '' : result;
     }
   }
 
