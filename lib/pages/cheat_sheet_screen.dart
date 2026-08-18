@@ -38,6 +38,7 @@ class CheatSheetScreen extends StatelessWidget {
                     _GestureRow('Long-press', 'Move row to top'),
                     _GestureRow('Swipe right', 'Copy amount'),
                     _GestureRow('Swipe left', 'Remove currency'),
+                    _GestureRow('Tap status bar', 'Open settings'),
                     _GestureRow('Long-press void', 'Open settings'),
                     const SizedBox(height: 40),
                     _SectionHeader('Add currencies'),

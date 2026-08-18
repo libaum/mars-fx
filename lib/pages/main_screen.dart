@@ -24,10 +24,9 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       body: GestureDetector(
         behavior: HitTestBehavior.translucent,
-        onLongPress: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const SettingsScreen()),
-        ),
+        // Kept as a second, hidden way in for anyone who knows it — the status
+        // bar below is the one that announces itself.
+        onLongPress: () => _openSettings(context),
         child: SafeArea(
           child: Column(
             children: [
@@ -81,12 +80,19 @@ class _MainScreenState extends State<MainScreen> {
                   },
                 ),
               ),
-              const StatusBar(),
+              StatusBar(onTap: () => _openSettings(context)),
               const SizedBox(height: 16),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  void _openSettings(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const SettingsScreen()),
     );
   }
 
