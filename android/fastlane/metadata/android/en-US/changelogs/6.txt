@@ -1,1 +1,1 @@
-60 currencies to choose from, including the Vietnamese dong and many more frequently travelled destinations. Currencies without a meaningful minor unit, like yen and dong, now show as whole numbers. Settings are a tap away in the status bar. Refreshed app icon and splash screen. Fixed swipe-to-delete accidentally triggering while scrolling the list.
+Refreshed app icon and splash screen. Fixed swipe-to-delete accidentally triggering while scrolling the list.
