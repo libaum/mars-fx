@@ -1,113 +1,37 @@
 # CLAUDE.md
 
-This file provides guidance when working with code in this repository.
+Mars Currency — a currency converter where **every currency is both input and
+output**: tap any row, type, and all other rows update. There is no "base
+currency" the user ever sees.
 
-## Project Overview
+This is the **reference implementation** for Mars conventions (`../DESIGN.md`):
+when in doubt how another app should structure DI, state, theme or constants,
+look here.
 
-Mars Currency is a minimal Flutter Android currency converter. Every currency is both an input and an output — tap any row, type a value, and all other visible currencies update instantly. Part of the Mars product family.
-
-## Common Commands
+## Commands
 
 ```bash
-# Run app
 flutter run
-
-# Run tests
 flutter test
-
-# Lint / static analysis
 flutter analyze
-
-# Run debug (app name: "Mars Currency Debug", package: com.catchingclouds.mars_fx.debug)
-./install_debug.sh
-
-# Run release (app name: "Mars Currency", package: com.catchingclouds.mars_fx)
-./install_release.sh
+./install_debug.sh     # "Mars Currency Debug", com.catchingclouds.marsfx.debug
+./install_release.sh   # "Mars Currency",       com.catchingclouds.marsfx
 ```
 
-## Architecture
+## Things that aren't obvious from the code
 
-### Dependency Injection
+- **Store id ≠ Dart package.** The Play applicationId is `com.catchingclouds.marsfx`
+  (no underscore); the Dart package is `mars_fx`. The id is permanent on Play —
+  never derive store or deep links from the Dart name.
+- Rates come from ExchangeRate-API with **EUR as base**; EUR is implicitly 1.0
+  and conversion is `amount / rates[from] * rates[to]`.
+- Offline first: cached rates load immediately, refresh runs in the background.
+- `CurrencyData` is a deliberately curated subset (60 currencies), not
+  everything the API offers.
+- Registration order in the service locator matters: `LocalStorageService`
+  (async) first.
 
-All global state lives in singleton classes registered via `GetIt` in `lib/services/service_locator.dart`. Access anywhere: `getIt<CurrencyListManager>()`. Services are initialized once in `main()` before `runApp`. Registration order matters — `LocalStorageService` (async) must be first.
+## Interactions
 
-### State Management
-
-Managers expose state via `ValueNotifier`. UI widgets subscribe with `ValueListenableBuilder`. No Bloc/Provider/Riverpod — pure Flutter primitives, matching Mars Launcher.
-
-### Key Classes
-
-| Class | Responsibility |
-|---|---|
-| `ExchangeRateService` | HTTP client for ExchangeRate-API (`open.er-api.com/v6/latest/EUR`) |
-| `LocalStorageService` | SharedPreferences wrapper for cached rates, visible currencies, timestamps |
-| `ExchangeRateRepository` | Coordinates API ↔ cache; offline-first (cache loads first, refresh in background) |
-| `CurrencyConverter` | Pure stateless conversion logic; all rates EUR-based internally |
-| `CurrencyData` | Static map of ISO code → full currency name (60 currencies — a curated subset of what the API offers) |
-| `CurrencyListManager` | Manages visible list, active input currency, computed amounts, reordering |
-| `ThemeManager` | Light/dark mode following system theme |
-
-### Conversion Model
-
-Rates are requested with EUR as the base, so all rates are EUR-based. EUR has an implicit rate of 1.0. Conversion formula: `amount / rates[from] * rates[to]`. The user never sees a "base currency" — any row can be tapped to become the input.
-
-### Persistence
-
-All user data stored locally via SharedPreferences:
-- Visible currency list + order
-- Cached exchange rates (JSON)
-- Last update timestamp
-
-No backend, no remote sync.
-
-## Project Structure
-
-```
-lib/
-├── data/
-│   ├── exchange_rate_service.dart    # ExchangeRate-API client
-│   ├── exchange_rate_repository.dart # Offline-first cache coordinator
-│   └── local_storage_service.dart    # SharedPreferences wrapper
-├── domain/
-│   ├── currency_converter.dart       # Pure conversion logic
-│   └── currency_data.dart            # Currency metadata
-├── logic/
-│   └── currency_list_manager.dart    # Core state manager
-├── pages/
-│   ├── main_screen.dart              # Single-screen layout
-│   ├── currency_search_screen.dart   # Add currency search
-│   └── widgets/
-│       ├── currency_row.dart         # Individual currency row
-│       └── status_bar.dart           # Update status display
-├── services/
-│   └── service_locator.dart          # GetIt registration
-├── theme/
-│   ├── theme_constants.dart          # Colors, text styles, theme builders
-│   └── theme_manager.dart            # System theme management
-└── main.dart                         # Entry point
-```
-
-## Key Interactions
-
-- **Tap** a currency row → make it active (editable input)
-- **Type** a value → all other currencies recalculate instantly
-- **Swipe left** on a row → delete currency (no confirmation)
-- **Long-press** a row → move to top of list
-- **Tap "+ Add Currency"** → opens search screen
-
-## Design Conventions
-
-- **Naming**: Constants use `SCREAMING_CASE` (matches Mars Launcher)
-- **Font**: Outfit with tabular figures for stable number alignment
-- **Colors**: Pure black/white only; `COLOR_SECONDARY` (gray) for secondary text
-- **Dart package name**: `mars_fx` (snake_case, used in imports — unrelated to the store)
-- **Android applicationId (the published store id)**: `com.catchingclouds.marsfx` — note: no underscore, and it differs from the Dart package name. This is permanent on Play; do not derive store/deep links from the Dart name.
-
-## Build Variants
-
-| Variant | applicationId | App Name |
-|---------|-------------|----------|
-| Debug | `com.catchingclouds.marsfx.debug` | Mars Currency Debug |
-| Release | `com.catchingclouds.marsfx` | Mars Currency |
-
-Both can be installed simultaneously on the same device.
+Tap a row = make it the input · swipe left = remove (no confirmation) ·
+long-press = move to top · "+ Add Currency" = search screen.
